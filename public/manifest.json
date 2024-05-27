@@ -3,18 +3,18 @@
   "short_name": "app",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/images/splash_screens/icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-384x384.png",
+      "src": "/images/splash_screens/icon.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/images/splash_screens/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -30,8 +30,5 @@
   "dir": "rtl",
   "lang": "fa",
   "gcm_sender_id": "203227373373",
-  "categories": [
-    "government",
-    "utilities"
-  ]
+  "categories": ["government", "utilities"]
 }
