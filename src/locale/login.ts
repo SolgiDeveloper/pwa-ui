@@ -1,5 +1,5 @@
 const login = {
-  title: 'ورود به اوزون',
+  title: 'ورود به اپ',
   description: 'سامانه جامع خدمات',
   enterPhoneNumber: 'شماره موبایل خود را وارد کنید',
   TermsAndConditions: 'قوانین و شرایط',

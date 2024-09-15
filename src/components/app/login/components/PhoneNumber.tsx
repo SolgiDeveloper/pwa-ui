@@ -80,7 +80,7 @@ const PhoneNumber = ({
         </Container>
 
         <Text className='text-1xl mt-5 xs:text-2xl' bold>
-          {common.to} <span className='text-primary'>{common.ozoneCard}</span> {common.welcome}
+          {common.to} <span className='text-primary'>{common.app}</span> {common.welcome}
         </Text>
         <Container className='m-5 w-44'>
           <Carousel

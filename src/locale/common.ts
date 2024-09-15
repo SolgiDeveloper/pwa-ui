@@ -1,5 +1,5 @@
 const common = {
-  ozoneCard: 'اوزون کارت',
+  app: 'اپ',
   phoneNumber: 'شماره موبایل',
   record: 'ثبت',
   welcome: 'خوش آمدید',

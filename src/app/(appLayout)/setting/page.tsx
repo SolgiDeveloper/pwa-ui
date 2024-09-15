@@ -1,12 +1,8 @@
-import Settings from '@/components/app/settings/Settings';
 import React from 'react';
+import Container from '@/components/share/container';
 
 const setting = () => {
-  return (
-    <>
-      <Settings />
-    </>
-  );
+  return <Container>Settings</Container>;
 };
 
 export default setting;

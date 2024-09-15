@@ -12,11 +12,13 @@ import 'react-spring-bottom-sheet/dist/style.css';
 import ReactQueryClientContext from '@/@core/contexts/react-query-client-context';
 import { locale } from '@/locale';
 
-const { wallet: walletLocale } = locale;
+const {
+  common: { app },
+} = locale;
 const mergeMeta = isPWA() ? PWAMetadata : {};
 export const metadata: Metadata = {
-  title: walletLocale.title,
-  description: walletLocale.description,
+  title: app,
+  description: app,
   ...mergeMeta,
 };
 

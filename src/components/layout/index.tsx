@@ -59,7 +59,7 @@ export default async function Layout({ children }: Props) {
     <Container
       id='root-element'
       className={cn(
-        'relative m-auto flex  max-w-[448px] flex-col  bg-neutral-900',
+        'relative m-auto flex  max-w-[448px] flex-col  bg-white',
         isIos ? 'h-vh' : 'h-dvh',
       )}
     >
