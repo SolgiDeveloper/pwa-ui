@@ -1,12 +1,32 @@
 import * as Yup from 'yup';
 
-//FIXME: use localization for all hardcode strings
-import localization from '@/constant/localization';
+import locale from '@/locale';
 
-export const mobile = Yup.string()
-  .matches(
-    /(0|\+98)?( |-|[()]){0,2}9[1|02349]( |-|[()]){0,2}(?:[0-9]( |-|[()]){0,2}){8}/,
-    'phone is incorrect',
-  )
-  .max(11, 'phone not match');
-export const digit = Yup.string().matches(/^([۰-۹]|[0-9])+$/, 'pattern is not correct');
+const { error, login } = locale;
+
+const require = Yup.string().required(error.required);
+
+const mobile = Yup.string().matches(/^09[0-9]{9}$/, error.wrongPhoneNumber);
+const digit = Yup.string().matches(/^([۰-۹]|[0-9])+$/, error.digits);
+const amountCheck = Yup.number()
+  .min(500000, error.amountMin)
+  .max(99900000000, error.amountMax)
+  .required(error.required);
+
+const passwordSchema = Yup.string()
+  .min(8, login.atLeast8Characters)
+  .matches(/[A-Z]/, login.includesLowercaseUppercase)
+  .matches(/[a-z]/, login.includesLowercaseUppercase)
+  .matches(/[0-9]/, login.containsNumber)
+  .matches(/[*&%^$.#@!]/, login.includingSign)
+  .required(error.required);
+
+const validation = {
+  mobile,
+  digit,
+  amountCheck,
+  require,
+  passwordSchema,
+};
+
+export default validation;

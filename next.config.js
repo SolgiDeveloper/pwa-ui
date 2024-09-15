@@ -4,7 +4,7 @@ import withSerwistInit from '@serwist/next';
 const withSerwist = withSerwistInit({
   // Note: This is only an example. If you use Pages Router,
   // use something else that works, such as "service-worker/index.ts".
-  swSrc: 'src/app/sw.ts',
+  swSrc: 'sw.ts',
   swDest: 'public/sw.js',
   register: false,
 });
@@ -33,23 +33,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'app.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'app.app.ir',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.hamrah-mechanic.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'app-core-dev.app.rocks',
-      },
-      {
-        protocol: 'https',
-        hostname: 'app-debt-dev.app.rocks',
+        hostname: '*',
       },
     ],
   },

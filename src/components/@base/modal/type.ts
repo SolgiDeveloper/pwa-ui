@@ -1,13 +1,13 @@
+import { type ElementType } from 'react';
 import {
-  DialogPanelProps as BaseDialogPanelProps,
-  DialogProps as BaseDialogProps,
+  type DialogPanelProps as BaseDialogPanelProps,
+  type DialogProps as BaseDialogProps,
 } from '@headlessui/react/dist/components/dialog/dialog';
-import { ElementType } from 'react';
-
-import Base from '@/components/@base/@helpers/types';
+import type Base from '@/components/@base/@helpers/types';
 
 type DialogProps<T extends ElementType = 'div'> = BaseDialogProps<T>;
 type DialogPanelProps<T extends ElementType = 'div'> = BaseDialogPanelProps<T>;
+
 export interface Props extends Base {
   onClose?: () => any;
   show?: boolean;
@@ -17,5 +17,8 @@ export interface Props extends Base {
   dialogPanelProps?: DialogPanelProps;
   dialogPanelClassName?: string;
   panelWrapperClassName?: string;
+  darkBackDrop?: boolean;
+  roundHead?: boolean;
 }
+
 export type { DialogPanelProps, DialogProps };

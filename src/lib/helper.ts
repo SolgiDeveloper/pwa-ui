@@ -4,17 +4,58 @@ import { ReadonlyURLSearchParams } from 'next/navigation';
 
 import { API_GATE_WAY, STORAGE_URL } from '@/constant/routes';
 import StorageKey from '@/constant/storage-key';
+import locale from '@/locale';
+const {
+  common: { rial },
+} = locale;
 
-export function APIUrlGenerator(route: string, qry?: object): string {
+export function dateUntilFutureDate(
+  futureDateStr: string,
+  mode: 'day' | 'minute' | 'second',
+  type: 'max' | 'min',
+): number {
+  const futureDate = new Date(futureDateStr);
+  const now = new Date();
+  const differenceInMillis = futureDate.getTime() - now.getTime();
+  let divider = 1; // 24 * 60 * 60 * 1000;
+  switch (mode) {
+    case 'day':
+      divider = 24 * 60 * 60 * 1000;
+      break;
+    case 'minute':
+      divider = 60 * 1000;
+      break;
+    case 'second':
+      divider = 1000;
+  }
+  if (type === 'max') {
+    return Math.ceil(differenceInMillis / divider);
+  } else return Math.floor(differenceInMillis / divider);
+}
+
+export function APIUrlGenerator({
+  route,
+  service,
+  qry,
+  scope = '/app',
+}: {
+  route: string;
+  service?: string;
+  qry?: object;
+  scope?: string;
+}): string {
   const query = qry || {};
   const queryKeys = Object.keys(query);
-  let apiUrl = `${API_GATE_WAY}${route}`;
+  const version = 'v1';
+  let apiUrl = `${API_GATE_WAY}${service}/${version}${scope}${route}`;
+
+  // const scope = 'app';
 
   queryKeys.map((item, index) => {
     if (index === 0) {
       apiUrl += '?';
     }
-    if (query[item] !== null) {
+    if (query[item] !== null && query[item] !== undefined) {
       if (queryKeys.length !== index + 1) {
         apiUrl += item + '=' + query[item] + '&';
       } else {
@@ -64,7 +105,13 @@ export function deleteFromLocalStorage(key: string): void {
   }
   return;
 }
-
+export const logout = () => {
+  Cookies.remove('token');
+  Cookies.remove('expires_in');
+  Cookies.remove('refresh_token');
+  Cookies.remove('user');
+  window.location.href = '/login';
+};
 export function createPathQueryString(
   currentPath: string,
   params: {
@@ -103,7 +150,7 @@ export function clearTokens() {
   Cookies.remove(StorageKey.TOKEN);
 }
 
-export function persianDateGenerator(date: Date) {
+export function persianDateGenerator(date: Date, type?: 'noDash') {
   const persianDate = new Intl.DateTimeFormat('fa', {
     year: 'numeric',
     month: 'long',
@@ -116,7 +163,11 @@ export function persianDateGenerator(date: Date) {
   const month = persianDate[2].value;
   const day = persianDate[4].value;
   const weekday = persianDate[6].value;
-  return `${weekday} ${day} ${month} ${year}`;
+  const hour = persianDate[8].value;
+  const minute = persianDate[10].value;
+  if (type === 'noDash') {
+    return `${weekday} ${day} ${month} ${year}  ${hour}:${minute}`;
+  } else return `${weekday} ${day} ${month} ${year} - ${hour}:${minute}`;
 }
 
 export function isIOS(): boolean {
@@ -154,11 +205,36 @@ export function getLocationStandardURL(latitude: number, longitude: number) {
 export function convertToEnglishNumber(num) {
   return num
     ?.toString()
-    .replace(/([۰-۹])/g, (englishNumber) =>
-      String.fromCharCode(englishNumber.charCodeAt(0) - 1728),
+    .replace(/[^۰-۹0-9]/g, '')
+    .replace(/([۰-۹])/g, (persianNumber) =>
+      String.fromCharCode(persianNumber.charCodeAt(0) - 1728),
     );
 }
-
+export function persianDateGenerator2(date: Date, type?: 'noDash') {
+  const persianDate = new Intl.DateTimeFormat('fa', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    weekday: 'long',
+  }).formatToParts(date);
+  const year = persianDate[0].value;
+  const month = persianDate[2].value;
+  const day = persianDate[4].value;
+  const weekday = persianDate[6].value;
+  const hour = persianDate[8].value;
+  const minute = persianDate[10].value;
+  if (type === 'noDash') {
+    return `${weekday} ${day} ${month} ${year}  ${hour}:${minute}`;
+  } else return `${weekday} ${day} ${month} ${year} - ${hour}:${minute}`;
+}
+export function currency(rial: number) {
+  if (rial >= 0) {
+    const rialComma = rial.toLocaleString('fa');
+    return `${rialComma}`;
+  }
+}
 export function isValidNationalCode(nationalCode: string) {
   if (!/^\d{10}$/.test(nationalCode)) return false;
   const check = +nationalCode[9];
@@ -169,3 +245,72 @@ export function isValidNationalCode(nationalCode: string) {
       .reduce((acc, x, i) => acc + +x * (10 - i), 0) % 11;
   return sum < 2 ? check === sum : check + sum === 11;
 }
+
+export function formatCurrency(amount: number): string {
+  // Define the currency units and their labels
+  const units = [
+    { divisor: 1e12, label: ' تریلیون تومان' },
+    { divisor: 1e9, label: ' میلیارد تومان' },
+    { divisor: 1e6, label: ' میلیون تومان' },
+    { divisor: 1e3, label: ' هزار تومان' },
+  ];
+
+  // Recursive function to format large numbers
+  function formatLargeNumber(num: number): string {
+    for (const unit of units) {
+      if (num >= unit.divisor) {
+        return (num / unit.divisor).toFixed(0) + unit.label;
+      }
+    }
+    return num.toFixed(0) + ' تومان';
+  }
+
+  // Check if amount is negative
+  const isNegative = amount < 0;
+  amount = Math.abs(amount);
+
+  // Use the recursive function for large numbers
+  if (amount >= 1e6) {
+    return (isNegative ? '-' : '') + formatLargeNumber(amount);
+  } else {
+    return (isNegative ? '-' : '') + amount.toFixed(0) + ' تومان';
+  }
+}
+
+export const numberInputProps = (
+  callback: (formattedValue: string) => void,
+): {
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+} => {
+  return {
+    onChange: (e) => {
+      const { value } = e.target;
+      let numberValue = value.replace(/,/g, '');
+      if (isIOS()) numberValue = convertToEnglishNumber(numberValue);
+      if (!isNaN(Number(numberValue)) && Number.isFinite(+numberValue)) {
+        const formattedValue =
+          Number(numberValue) > 0 ? numberValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+        callback(formattedValue);
+      }
+    },
+  };
+};
+
+export const formatNumberWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const convertPhoneNumber = (number) => {
+  return '+98' + String(number).substr(1);
+};
+
+export const rialCurrency = (rialInput: number) => {
+  return `${rialInput.toLocaleString()} ${rial}`;
+};
+
+export const formatPhoneNumber = (phoneNumber) => {
+  if (phoneNumber.startsWith('+98')) {
+    return '0' + phoneNumber.slice(3);
+  }
+  return phoneNumber;
+};

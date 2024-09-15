@@ -1,38 +1,40 @@
-import { ReactNode } from 'react';
 import { create } from 'zustand';
-
 import { DialogPanelProps, DialogProps } from '@/components/@base/modal/type';
 
 interface OptionsType {
-  Head?: (() => ReactNode) | null;
-  Body?: () => ReactNode;
-  Action?: (() => ReactNode) | null;
+  Head?: (() => JSX.Element) | null;
+  Body?: () => JSX.Element;
+  Action?: (() => JSX.Element) | null;
   DialogProps?: DialogProps | null;
   DialogPanelProps?: DialogPanelProps | null;
   onDemandClose?: boolean;
   noBackDrop?: boolean;
+  darkBackDrop?: boolean;
   center?: boolean;
+  dialogPanelClassName?: string;
 }
 
 interface CommonModalState {
   show: boolean;
-  Head: (() => ReactNode) | null;
-  Body: () => ReactNode;
-  Action: (() => ReactNode) | null;
+  Head: (() => JSX.Element) | null;
+  Body: () => JSX.Element;
+  Action: (() => JSX.Element) | null;
   DialogProps?: DialogProps | null;
   DialogPanelProps?: DialogPanelProps | null;
   onDemandClose?: boolean;
   noBackDrop?: boolean;
+  darkBackDrop?: boolean;
   center?: boolean;
   setDialogProps: (DialogProps: DialogProps) => void;
   setDialogPanelProps: (DialogPanelProps: DialogPanelProps) => void;
   setShow: (showing: boolean, options?: OptionsType) => void;
-  setHead: (Head: ReactNode) => void;
-  setBody: (Body: ReactNode) => void;
-  setAction: (Action: ReactNode) => void;
+  setHead: (Head: JSX.Element) => void;
+  setBody: (Body: JSX.Element) => void;
+  setAction: (Action: JSX.Element) => void;
+  dialogPanelClassName?: string;
 }
 
-const useCommonModalStore = create<CommonModalState>((set) => ({
+const useCommonModalStore = create<CommonModalState>((set, get) => ({
   show: false,
   Body: () => <></>,
   Action: null,
@@ -40,9 +42,14 @@ const useCommonModalStore = create<CommonModalState>((set) => ({
   DialogProps: null,
   DialogPanelProps: null,
   onDemandClose: false,
+  darkBackDrop: false,
   center: false,
-  setDialogProps: (DialogProps) => set({ DialogProps }),
-  setDialogPanelProps: (DialogPanelProps) => set({ DialogPanelProps }),
+  setDialogProps: (DialogProps) => {
+    set({ DialogProps });
+  },
+  setDialogPanelProps: (DialogPanelProps) => {
+    set({ DialogPanelProps });
+  },
   setShow: (
     show,
     {
@@ -53,18 +60,22 @@ const useCommonModalStore = create<CommonModalState>((set) => ({
       DialogPanelProps = null,
       onDemandClose = false,
       noBackDrop = false,
+      darkBackDrop = false,
       center = false,
+      dialogPanelClassName = '',
     } = {
-      Head: null,
-      Body: () => <></>,
+      Head: get().Head,
+      Body: get().Body,
       Action: null,
       DialogProps: null,
       DialogPanelProps: null,
       onDemandClose: false,
+      darkBackDrop: false,
       noBackDrop: false,
-      center: false,
+      center: get().center,
+      dialogPanelClassName: '',
     },
-  ) =>
+  ) => {
     set({
       show,
       Body,
@@ -73,11 +84,20 @@ const useCommonModalStore = create<CommonModalState>((set) => ({
       DialogProps,
       DialogPanelProps,
       onDemandClose,
+      darkBackDrop,
       noBackDrop,
       center,
-    }),
-  setHead: (Head) => set({ Head: () => Head }),
-  setBody: (Body) => set({ Body: () => Body }),
-  setAction: (Action) => set({ Action: () => Action }),
+      dialogPanelClassName,
+    });
+  },
+  setHead: (Head) => {
+    set({ Head: () => Head });
+  },
+  setBody: (Body) => {
+    set({ Body: () => Body });
+  },
+  setAction: (Action) => {
+    set({ Action: () => Action });
+  },
 }));
 export default useCommonModalStore;

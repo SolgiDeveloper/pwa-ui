@@ -6,25 +6,36 @@ import cn from '@/lib/clsxm';
 import ModalAction from '@/components/@base/modal/action';
 import ModalBody from '@/components/@base/modal/body';
 import ModalHead from '@/components/@base/modal/head';
-import { Props } from '@/components/@base/modal/type';
+import { type Props } from '@/components/@base/modal/type';
 
 export default function Modal({
   onClose,
   show = false,
   noBackDrop = false,
   center = false,
+  darkBackDrop = false,
   children,
   dialogProps,
   className,
   dialogPanelProps,
   dialogPanelClassName,
   panelWrapperClassName,
+  roundHead = false,
 }: Props) {
-  const { className: dialogClassName, ...otherDialogProps } = dialogProps || {};
+  const { className: dialogClassName, ...otherDialogProps } = dialogProps ?? {};
   const { className: otherDialogPanelClassName, ...otherDialogPanelProps } =
-    dialogPanelProps || {};
+    dialogPanelProps ?? {};
   return (
-    <Transition appear show={show} as={Fragment}>
+    <Transition
+      appear
+      enterFrom='opacity-0'
+      enterTo='opacity-100'
+      leave='transition-opacity duration-50'
+      leaveFrom='opacity-100'
+      leaveTo='opacity-0'
+      show={show}
+      as={Fragment}
+    >
       <Dialog
         as='div'
         className={cn('relative z-[100]', dialogClassName, className)}
@@ -41,7 +52,15 @@ export default function Modal({
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
           >
-            <div className='fixed inset-0 bg-black/25' onClick={(e) => e.preventDefault()} />
+            <div
+              className={cn(
+                'fixed inset-0 bg-black/45 backdrop-blur-sm',
+                darkBackDrop && 'bg-neutral-900',
+              )}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            />
           </Transition.Child>
         )}
 
@@ -64,8 +83,9 @@ export default function Modal({
             >
               <Dialog.Panel
                 className={cn(
-                  'w-full max-w-md overflow-hidden rounded-t-2xl bg-white p-4 text-left align-middle shadow-xl md:rounded-2xl md:p-6',
-                  center && 'w-80 rounded-2xl',
+                  'w-full max-w-md overflow-hidden bg-neutral-900 p-4 text-left align-middle sm:shadow-xl md:rounded-2xl md:p-6 md:shadow-none',
+                  roundHead && 'rounded-t-xl',
+                  center && 'w-[90%] max-w-lg rounded-xl',
                   otherDialogPanelClassName,
                   dialogPanelClassName,
                 )}
