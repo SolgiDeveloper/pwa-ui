@@ -35,7 +35,7 @@
 
     Note: for some plain page like /not-found/ page just create name.tsx file in app folder.
 
-    if we have nested route (ex: ozone), just add folder inside our current folder with page.tsx (perform above rules ) and it will be rendered as about-us/ozone.
+    if we have nested route (ex: tala), just add folder inside our current folder with page.tsx (perform above rules ) and it will be rendered as about-us/tala.
 
     for [dynamic routes](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) add folder name inside [ ], for instance [station] folder in gas-station route.
 
